@@ -1,8 +1,10 @@
 import './App.css';
+import HealthCheck from './components/HealthCheck';
 
 function App() {
   return (
     <div className="App">
+      <HealthCheck />
       {/* Header */}
       <header className="header">
         <div className="nav">
