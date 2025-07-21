@@ -1,8 +1,9 @@
 pipeline {
-    agent any
-    
-    tools {
-        nodejs 'NodeJS-18'
+    agent {
+        docker {
+            image 'node:18-alpine'
+            args '-v /var/run/docker.sock:/var/run/docker.sock'
+        }
     }
     
     environment {
@@ -19,25 +20,13 @@ pipeline {
         
         stage('Install Dependencies') {
             steps {
-                script {
-                    if (isUnix()) {
-                        sh 'npm ci'
-                    } else {
-                        bat 'npm ci'
-                    }
-                }
+                sh 'npm ci'
             }
         }
         
         stage('Test') {
             steps {
-                script {
-                    if (isUnix()) {
-                        sh 'npm test -- --coverage --watchAll=false'
-                    } else {
-                        bat 'npm test -- --coverage --watchAll=false'
-                    }
-                }
+                sh 'npm test -- --coverage --watchAll=false'
             }
             post {
                 always {
@@ -55,41 +44,22 @@ pipeline {
         
         stage('Build') {
             steps {
-                script {
-                    if (isUnix()) {
-                        sh 'npm run build'
-                    } else {
-                        bat 'npm run build'
-                    }
-                }
+                sh 'npm run build'
             }
         }
         
         stage('Docker Build') {
             steps {
-                script {
-                    if (isUnix()) {
-                        sh "docker build -t ${IMAGE_NAME}:${IMAGE_TAG} ."
-                        sh "docker tag ${IMAGE_NAME}:${IMAGE_TAG} ${IMAGE_NAME}:latest"
-                    } else {
-                        bat "docker build -t ${IMAGE_NAME}:${IMAGE_TAG} ."
-                        bat "docker tag ${IMAGE_NAME}:${IMAGE_TAG} ${IMAGE_NAME}:latest"
-                    }
-                }
+                sh "docker build -t ${IMAGE_NAME}:${IMAGE_TAG} ."
+                sh "docker tag ${IMAGE_NAME}:${IMAGE_TAG} ${IMAGE_NAME}:latest"
             }
         }
         
         stage('Deploy') {
             steps {
-                script {
-                    if (isUnix()) {
-                        sh "./jenkins/scripts/deploy.sh ${IMAGE_NAME} latest 3000"
-                    } else {
-                        bat "docker stop ${IMAGE_NAME} 2>nul || echo Container not running"
-                        bat "docker rm ${IMAGE_NAME} 2>nul || echo Container not found"
-                        bat "docker run -d --name ${IMAGE_NAME} -p 3000:80 --restart unless-stopped ${IMAGE_NAME}:latest"
-                    }
-                }
+                sh "docker stop ${IMAGE_NAME} || true"
+                sh "docker rm ${IMAGE_NAME} || true"
+                sh "docker run -d --name ${IMAGE_NAME} -p 3000:80 --restart unless-stopped ${IMAGE_NAME}:latest"
             }
         }
     }
