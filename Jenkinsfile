@@ -28,18 +28,6 @@ pipeline {
             steps {
                 sh 'npm test -- --coverage --watchAll=false'
             }
-            post {
-                always {
-                    publishHTML([
-                        allowMissing: false,
-                        alwaysLinkToLastBuild: true,
-                        keepAll: true,
-                        reportDir: 'coverage/lcov-report',
-                        reportFiles: 'index.html',
-                        reportName: 'Coverage Report'
-                    ])
-                }
-            }
         }
         
         stage('Build') {
@@ -50,6 +38,7 @@ pipeline {
         
         stage('Docker Build') {
             steps {
+                sh 'apk add --no-cache docker'
                 sh "docker build -t ${IMAGE_NAME}:${IMAGE_TAG} ."
                 sh "docker tag ${IMAGE_NAME}:${IMAGE_TAG} ${IMAGE_NAME}:latest"
             }
@@ -59,15 +48,12 @@ pipeline {
             steps {
                 sh "docker stop ${IMAGE_NAME} || true"
                 sh "docker rm ${IMAGE_NAME} || true"
-                sh "docker run -d --name ${IMAGE_NAME} -p 3000:80 --restart unless-stopped ${IMAGE_NAME}:latest"
+                sh "docker run -d --name ${IMAGE_NAME} -p 3001:80 --restart unless-stopped ${IMAGE_NAME}:latest"
             }
         }
     }
     
     post {
-        always {
-            cleanWs()
-        }
         failure {
             echo 'Pipeline failed!'
         }
