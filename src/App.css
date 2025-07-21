@@ -1,38 +1,486 @@
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  font-family: 'Arial', sans-serif;
+  background: #fff;
+  color: #000;
+  line-height: 1.4;
+  overflow-x: hidden;
+}
+
 .App {
+  min-height: 100vh;
+}
+
+/* Header */
+.header {
+  position: fixed;
+  top: 0;
+  width: 100%;
+  background: #fff;
+  z-index: 1000;
+}
+
+.nav {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 15px 30px;
+  max-width: 1000px;
+  margin: 0 auto;
+}
+
+.logo {
+  font-size: 16px;
+  font-weight: 800;
+  letter-spacing: -0.5px;
+}
+
+.nav-links {
+  display: flex;
+  gap: 25px;
+}
+
+.nav-links a {
+  color: #000;
+  text-decoration: none;
+  font-weight: 600;
+  font-size: 13px;
+  transition: all 0.1s ease;
+  position: relative;
+  padding: 6px 10px;
+  margin: -6px -10px;
+}
+
+.nav-links a:hover {
+  background: #ffdd00;
+  color: #000;
+  text-decoration: underline;
+  text-decoration-thickness: 3px;
+  text-underline-offset: 2px;
+}
+
+.nav-links a:active {
+  background: #fd0;
+  color: #000;
+}
+
+/* Hero Section */
+.hero {
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  padding: 100px 30px 30px;
+  max-width: 1000px;
+  margin: 0 auto;
   text-align: center;
 }
 
-.App-logo {
-  height: 40vmin;
-  pointer-events: none;
+.hero-content {
+  flex: 1;
 }
 
-@media (prefers-reduced-motion: no-preference) {
-  .App-logo {
-    animation: App-logo-spin infinite 20s linear;
-  }
+.hero-title {
+  font-size: clamp(40px, 8vw, 70px);
+  font-weight: 800;
+  line-height: 0.9;
+  letter-spacing: -1px;
+  margin-bottom: 20px;
+  text-shadow: 3px 3px 0px #ccc;
 }
 
-.App-header {
-  background-color: #282c34;
-  min-height: 100vh;
+.hero-subtitle {
+  font-size: 14px;
+  font-weight: 500;
+  letter-spacing: 0.5px;
+  margin-bottom: 25px;
+  color: #666;
+  max-width: 350px;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.btn-primary {
+  background: #000;
+  color: #fff;
+  border: 2px solid #000;
+  padding: 12px 25px;
+  font-size: 13px;
+  font-weight: 600;
+  letter-spacing: 0.5px;
+  cursor: pointer;
+  transition: all 0.1s ease;
+  text-transform: uppercase;
+  box-shadow: 4px 4px 0px #000;
+}
+
+.btn-primary:hover {
+  background: #ffdd00;
+  color: #000;
+  border: 2px solid #000;
+  box-shadow: 4px 4px 0px #000;
+}
+
+.btn-primary:active {
+  background: #fd0;
+  color: #000;
+  border: 2px solid #000;
+  transform: translate(2px, 2px);
+  box-shadow: 2px 2px 0px #000;
+}
+
+.hero-visual {
+  flex: 1;
   display: flex;
-  flex-direction: column;
-  align-items: center;
   justify-content: center;
-  font-size: calc(10px + 2vmin);
-  color: white;
+  align-items: center;
+  margin-top: 40px;
 }
 
-.App-link {
-  color: #61dafb;
+.geometric-shape {
+  width: 200px;
+  height: 200px;
+  background: #f8f8f8;
+  border: 3px solid #000;
+  transform: rotate(12deg);
+  position: relative;
+  box-shadow: 6px 6px 0px #000;
 }
 
-@keyframes App-logo-spin {
-  from {
-    transform: rotate(0deg);
+.geometric-shape::before {
+  content: '';
+  position: absolute;
+  top: 20px;
+  left: 20px;
+  width: 80px;
+  height: 80px;
+  background: #000;
+  transform: rotate(-12deg);
+}
+
+/* Sections */
+section {
+  padding: 80px 30px;
+  max-width: 1000px;
+  margin: 0 auto;
+  text-align: center;
+}
+
+.section-header {
+  margin-bottom: 30px;
+}
+
+.section-header h2 {
+  font-size: 28px;
+  font-weight: 800;
+  letter-spacing: -0.5px;
+  text-shadow: 2px 2px 0px #ddd;
+}
+
+/* About Section */
+.about {
+  background: #fafafa;
+}
+
+.about-text p {
+  font-size: 16px;
+  font-weight: 500;
+  line-height: 1.4;
+  margin-bottom: 25px;
+  max-width: 500px;
+  color: #333;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.skills {
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+  justify-content: center;
+  margin-top: 30px;
+}
+
+.skill-item {
+  background: #fff;
+  color: #000;
+  border: 2px solid #000;
+  padding: 8px 16px;
+  font-weight: 600;
+  font-size: 13px;
+  letter-spacing: 0.5px;
+  transition: all 0.1s ease;
+  box-shadow: 3px 3px 0px #000;
+  cursor: pointer;
+}
+
+.skill-item:hover {
+  background: #ffdd00;
+  color: #000;
+  border: 2px solid #000;
+  box-shadow: 4px 4px 0px #000;
+}
+
+.skill-item:active {
+  background: #fd0;
+  color: #000;
+  border: 2px solid #000;
+  transform: translate(1px, 1px);
+  box-shadow: 2px 2px 0px #000;
+}
+
+/* Work Section */
+.work-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+  gap: 20px;
+}
+
+.work-item {
+  background: #fff;
+  border: 2px solid #000;
+  padding: 25px;
+  transition: all 0.1s ease;
+  box-shadow: 4px 4px 0px #000;
+  cursor: pointer;
+}
+
+.work-item:hover {
+  background: #ffdd00;
+  color: #000;
+  border: 2px solid #000;
+  box-shadow: 4px 4px 0px #000;
+}
+
+.work-item:active {
+  background: #fd0;
+  color: #000;
+  border: 2px solid #000;
+  transform: translate(2px, 2px);
+  box-shadow: 2px 2px 0px #000;
+}
+
+.work-number {
+  font-size: 24px;
+  font-weight: 800;
+  color: #ccc;
+  margin-bottom: 10px;
+}
+
+.work-item h3 {
+  font-size: 16px;
+  font-weight: 700;
+  margin-bottom: 8px;
+  letter-spacing: -0.5px;
+}
+
+.work-item p {
+  font-size: 13px;
+  color: #666;
+  font-weight: 500;
+}
+
+/* Contact Section */
+.contact {
+  background: #fafafa;
+}
+
+.contact-item {
+  margin-bottom: 25px;
+}
+
+.contact-item span {
+  display: block;
+  font-size: 12px;
+  font-weight: 700;
+  color: #999;
+  margin-bottom: 8px;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+}
+
+.contact-item a {
+  color: #000;
+  text-decoration: none;
+  font-size: 16px;
+  font-weight: 600;
+  letter-spacing: -0.5px;
+  transition: all 0.1s ease;
+  padding: 4px 8px;
+  margin: -4px -8px;
+  display: inline-block;
+}
+
+.contact-item a:hover {
+  background: #ffdd00;
+  color: #000;
+  text-decoration: underline;
+  text-decoration-thickness: 3px;
+  text-underline-offset: 2px;
+}
+
+.contact-item a:active {
+  background: #fd0;
+  color: #000;
+}
+
+.social-links {
+  display: flex;
+  gap: 15px;
+  justify-content: center;
+}
+
+.social-links a {
+  font-size: 14px;
+  padding: 6px 10px;
+  margin: -6px -10px;
+  transition: all 0.1s ease;
+}
+
+.social-links a:hover {
+  background: #ffdd00;
+  color: #000;
+  text-decoration: underline;
+  text-decoration-thickness: 2px;
+  text-underline-offset: 2px;
+}
+
+.social-links a:active {
+  background: #fd0;
+  color: #000;
+}
+
+/* Footer */
+.footer {
+  background: #fff;
+  padding: 30px;
+  text-align: center;
+}
+
+.footer-content p {
+  font-weight: 500;
+  letter-spacing: 0.5px;
+  color: #999;
+  font-size: 12px;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .nav {
+    padding: 15px 20px;
   }
-  to {
-    transform: rotate(360deg);
+  
+  .nav-links {
+    gap: 15px;
+  }
+  
+  .nav-links a {
+    font-size: 12px;
+    padding: 4px 8px;
+  }
+  
+  .hero {
+    flex-direction: column;
+    padding: 80px 20px 40px;
+    min-height: 70vh;
+  }
+  
+  .hero-title {
+    font-size: clamp(30px, 10vw, 50px);
+    text-shadow: 2px 2px 0px #ccc;
+  }
+  
+  .hero-visual {
+    margin-top: 30px;
+  }
+  
+  .geometric-shape {
+    width: 150px;
+    height: 150px;
+  }
+  
+  .geometric-shape::before {
+    width: 60px;
+    height: 60px;
+    top: 15px;
+    left: 15px;
+  }
+  
+  section {
+    padding: 50px 20px;
+  }
+  
+  .section-header h2 {
+    font-size: 24px;
+    text-shadow: 2px 2px 0px #ddd;
+  }
+  
+  .about-text p {
+    font-size: 14px;
+  }
+  
+  .skill-item {
+    font-size: 12px;
+    padding: 6px 12px;
+  }
+  
+  .work-grid {
+    grid-template-columns: 1fr;
+    gap: 20px;
+  }
+  
+  .work-item {
+    padding: 20px;
+  }
+  
+  .work-number {
+    font-size: 20px;
+  }
+  
+  .work-item h3 {
+    font-size: 14px;
+  }
+  
+  .work-item p {
+    font-size: 12px;
+  }
+  
+  .contact-item a {
+    font-size: 14px;
+  }
+  
+  .social-links {
+    flex-direction: column;
+    gap: 10px;
+  }
+  
+  .social-links a {
+    font-size: 13px;
+  }
+  
+  .footer {
+    padding: 20px;
+  }
+  
+  .footer-content p {
+    font-size: 11px;
+  }
+}
+
+@media (max-width: 480px) {
+  .hero {
+    padding: 60px 15px 30px;
+  }
+  
+  section {
+    padding: 40px 15px;
+  }
+  
+  .nav {
+    padding: 10px 15px;
   }
 }
