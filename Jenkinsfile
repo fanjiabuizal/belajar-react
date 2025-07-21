@@ -1,6 +1,10 @@
 pipeline {
     agent any
     
+    tools {
+        nodejs 'NodeJS-18'
+    }
+    
     environment {
         IMAGE_NAME = 'belajar-react'
         IMAGE_TAG = "${BUILD_NUMBER}"
