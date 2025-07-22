@@ -90,14 +90,7 @@ function App() {
               <span>EMAIL</span>
               <a href="mailto:hello@example.com">HELLO@EXAMPLE.COM</a>
             </div>
-            <div className="contact-item">
-              <span>SOCIAL</span>
-              <div className="social-links">
-                <a href="#">GITHUB</a>
-                <a href="#">LINKEDIN</a>
-                <a href="#">TWITTER</a>
-              </div>
-            </div>
+
           </div>
         </div>
       </section>

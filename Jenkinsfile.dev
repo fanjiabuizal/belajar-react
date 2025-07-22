@@ -1,18 +1,31 @@
 pipeline {
     agent any
     
+    tools {
+        nodejs 'Node 22'  // Match local Node.js version v22.17.0
+    }
+    
     environment {
         ENVIRONMENT = 'development'
         BUILD_DIR = 'build-dev'
         PORT = '3001'
+        PATH = "C:\\Program Files\\nodejs;${env.PATH}"  // Add Node.js to PATH
     }
     
     stages {
         stage('Development Build') {
             steps {
                 echo 'Building for Development Environment'
+                
+                // Debug: Check Node.js and npm
+                bat 'node --version'
+                bat 'npm --version'
+                bat 'where node'
+                bat 'where npm'
+                
+                // Install and build
                 bat 'npm ci'
-                bat 'npm run build'
+                bat 'set CI=false && npm run build'
                 bat 'rename build build-dev'
             }
         }
@@ -26,6 +39,9 @@ pipeline {
         stage('Deploy to Dev') {
             steps {
                 echo 'Deploying to Development Server'
+                // Create parent directory if not exists
+                bat 'if not exist "D:\\LATIHAN\\jenkins" mkdir "D:\\LATIHAN\\jenkins"'
+                
                 // Copy to dev folder
                 bat 'if exist "D:\\LATIHAN\\jenkins\\dev" rmdir /s /q "D:\\LATIHAN\\jenkins\\dev"'
                 bat 'xcopy "build-dev\\*" "D:\\LATIHAN\\jenkins\\dev\\" /E /I /Y'
