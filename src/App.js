@@ -93,9 +93,9 @@ function App() {
             <div className="contact-item">
               <span>SOCIAL</span>
               <div className="social-links">
-                <a href="#">GITHUB</a>
-                <a href="#">LINKEDIN</a>
-                <a href="#">TWITTER</a>
+                <a href="https://github.com">GITHUB</a>
+                <a href="https://linkedin.com">LINKEDIN</a>
+                <a href="https://twitter.com">TWITTER</a>
               </div>
             </div>
           </div>
