@@ -2,7 +2,7 @@ pipeline {
     agent any
     
     tools {
-        nodejs 'Node 22'  // Match local Node.js version v22.17.0
+        nodejs 'Node 22'  // Configure Node 22 in Jenkins Global Tool Configuration first
     }
     
     environment {
