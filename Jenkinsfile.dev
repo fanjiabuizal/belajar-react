@@ -18,7 +18,7 @@ pipeline {
                 echo 'Building for Development Environment'
                 bat 'npm ci'
                 bat 'set CI=false && npm run build'
-                bat 'rename build build-dev'
+                // Skip rename - use build folder directly
             }
         }
         
@@ -36,7 +36,7 @@ pipeline {
                 
                 // Copy to dev folder
                 bat 'if exist "D:\\LATIHAN\\jenkins\\dev" rmdir /s /q "D:\\LATIHAN\\jenkins\\dev"'
-                bat 'xcopy "build-dev\\*" "D:\\LATIHAN\\jenkins\\dev\\" /E /I /Y'
+                bat 'xcopy "build\\*" "D:\\LATIHAN\\jenkins\\dev\\" /E /I /Y'
                 
                 // Start dev server (optional)
                 bat 'cd "D:\\LATIHAN\\jenkins\\dev" && start /B npx serve -s . -l %PORT%'
@@ -45,7 +45,7 @@ pipeline {
         
         stage('Archive Dev Build') {
             steps {
-                archiveArtifacts artifacts: 'build-dev/**/*', fingerprint: true
+                archiveArtifacts artifacts: 'build/**/*', fingerprint: true
             }
         }
     }
