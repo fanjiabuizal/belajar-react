@@ -1,20 +1,30 @@
-version: '3.8'
+# Jenkins configuration for Windows - port 8085
+# Run Jenkins manually on Windows or use this for reference
+# Jenkins URL: http://localhost:8085/
 
-services:
-  jenkins:
-    image: jenkins/jenkins:lts
-    container_name: jenkins-container
-    ports:
-      - "8080:8080"
-      - "50000:50000"
-    volumes:
-      - jenkins_home:/var/jenkins_home
-      - /var/run/docker.sock:/var/run/docker.sock
-      - /usr/bin/docker:/usr/bin/docker
-    environment:
-      - DOCKER_HOST=unix:///var/run/docker.sock
-    user: root
-    restart: unless-stopped
+# version: '3.8'
 
-volumes:
-  jenkins_home:
+# services:
+#   jenkins:
+#     image: jenkins/jenkins:lts
+#     container_name: jenkins-container
+#     ports:
+#       - "8085:8080"  # Changed to port 8085
+#       - "50000:50000"
+#     volumes:
+#       - jenkins_home:/var/jenkins_home
+#       # Docker volumes commented out - not using Docker
+#       # - /var/run/docker.sock:/var/run/docker.sock
+#       # - /usr/bin/docker:/usr/bin/docker
+#     environment:
+#       # - DOCKER_HOST=unix:///var/run/docker.sock
+#     # user: root
+#     restart: unless-stopped
+
+# volumes:
+#   jenkins_home:
+
+# For Windows Jenkins installation:
+# 1. Download Jenkins from https://www.jenkins.io/download/
+# 2. Install and run on port 8085
+# 3. Access at http://localhost:8085/

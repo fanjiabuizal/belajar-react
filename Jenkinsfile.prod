@@ -1,0 +1,105 @@
+pipeline {
+    agent any
+    
+    environment {
+        ENVIRONMENT = 'production'
+        BUILD_DIR = 'build-prod'
+        PORT = '3000'
+    }
+    
+    parameters {
+        choice(
+            name: 'DEPLOY_APPROVAL',
+            choices: ['NO', 'YES'],
+            description: 'Deploy to Production?'
+        )
+    }
+    
+    stages {
+        stage('Checkout Production Code') {
+            steps {
+                // Checkout from main branch (production)
+                git branch: 'main', url: 'https://github.com/USERNAME/belajar-react.git'
+                echo 'Checked out production code from main branch'
+            }
+        }
+        
+        stage('Production Build') {
+            steps {
+                echo 'Building for Production Environment'
+                bat 'npm ci --production'
+                bat 'set REACT_APP_ENV=production && npm run build'
+                bat 'rename build build-prod'
+            }
+        }
+        
+        stage('Production Tests') {
+            steps {
+                bat 'npm test -- --coverage --watchAll=false --testPathPattern=src'
+            }
+        }
+        
+        stage('Security & Quality Checks') {
+            steps {
+                echo 'Running security and quality checks'
+                // Add security scans here
+                bat 'npm audit --audit-level moderate'
+            }
+        }
+        
+        stage('Deploy Approval') {
+            when {
+                expression { params.DEPLOY_APPROVAL == 'YES' }
+            }
+            steps {
+                input message: 'Deploy to Production?', ok: 'Deploy',
+                      submitterParameter: 'DEPLOYER'
+            }
+        }
+        
+        stage('Deploy to Production') {
+            when {
+                expression { params.DEPLOY_APPROVAL == 'YES' }
+            }
+            steps {
+                echo 'Deploying to Production Server'
+                // Backup current production
+                bat 'if exist "D:\\LATIHAN\\jenkins\\backup" rmdir /s /q "D:\\LATIHAN\\jenkins\\backup"'
+                bat 'if exist "D:\\LATIHAN\\jenkins\\prod" xcopy "D:\\LATIHAN\\jenkins\\prod\\*" "D:\\LATIHAN\\jenkins\\backup\\" /E /I /Y'
+                
+                // Deploy new version
+                bat 'if exist "D:\\LATIHAN\\jenkins\\prod" rmdir /s /q "D:\\LATIHAN\\jenkins\\prod"'
+                bat 'xcopy "build-prod\\*" "D:\\LATIHAN\\jenkins\\prod\\" /E /I /Y'
+                
+                // Start production server
+                bat 'cd "D:\\LATIHAN\\jenkins\\prod" && start /B npx serve -s . -l %PORT%'
+            }
+        }
+        
+        stage('Archive Production Build') {
+            steps {
+                archiveArtifacts artifacts: 'build-prod/**/*', fingerprint: true
+            }
+        }
+    }
+    
+    post {
+        success {
+            echo 'Production pipeline completed!'
+            script {
+                if (params.DEPLOY_APPROVAL == 'YES') {
+                    echo 'Production deployed! Access at http://localhost:3000'
+                }
+            }
+        }
+        failure {
+            echo 'Production pipeline failed!'
+            // Rollback if deployment failed
+            script {
+                if (params.DEPLOY_APPROVAL == 'YES') {
+                    bat 'if exist "D:\\LATIHAN\\jenkins\\backup" xcopy "D:\\LATIHAN\\jenkins\\backup\\*" "D:\\LATIHAN\\jenkins\\prod\\" /E /I /Y'
+                }
+            }
+        }
+    }
+}

@@ -1,14 +1,18 @@
 pipeline {
-    agent {
-        docker {
-            image 'node:18-alpine'
-            args '-v /var/run/docker.sock:/var/run/docker.sock'
-        }
-    }
+    agent any
+    
+    // Docker configuration commented out
+    // agent {
+    //     docker {
+    //         image 'node:18-alpine'
+    //         args '-v /var/run/docker.sock:/var/run/docker.sock'
+    //     }
+    // }
     
     environment {
-        IMAGE_NAME = 'belajar-react'
-        IMAGE_TAG = "${BUILD_NUMBER}"
+        // IMAGE_NAME = 'belajar-react'
+        // IMAGE_TAG = "${BUILD_NUMBER}"
+        BUILD_DIR = 'build'
     }
     
     stages {
@@ -20,37 +24,45 @@ pipeline {
         
         stage('Install Dependencies') {
             steps {
-                sh 'npm ci'
+                bat 'npm ci'
             }
         }
         
         stage('Test') {
             steps {
-                sh 'npm test -- --coverage --watchAll=false'
+                bat 'npm test -- --coverage --watchAll=false'
             }
         }
         
         stage('Build') {
             steps {
-                sh 'npm run build'
+                bat 'npm run build'
             }
         }
         
-        stage('Docker Build') {
+        // Docker Build stage commented out
+        // stage('Docker Build') {
+        //     steps {
+        //         sh 'apk add --no-cache docker'
+        //         sh "docker build -t ${IMAGE_NAME}:${IMAGE_TAG} ."
+        //         sh "docker tag ${IMAGE_NAME}:${IMAGE_TAG} ${IMAGE_NAME}:latest"
+        //     }
+        // }
+        
+        stage('Archive Build') {
             steps {
-                sh 'apk add --no-cache docker'
-                sh "docker build -t ${IMAGE_NAME}:${IMAGE_TAG} ."
-                sh "docker tag ${IMAGE_NAME}:${IMAGE_TAG} ${IMAGE_NAME}:latest"
+                archiveArtifacts artifacts: 'build/**/*', fingerprint: true
             }
         }
         
-        stage('Deploy') {
-            steps {
-                sh "docker stop ${IMAGE_NAME} || true"
-                sh "docker rm ${IMAGE_NAME} || true"
-                sh "docker run -d --name ${IMAGE_NAME} -p 3001:80 --restart unless-stopped ${IMAGE_NAME}:latest"
-            }
-        }
+        // Docker Deploy stage commented out
+        // stage('Deploy') {
+        //     steps {
+        //         sh "docker stop ${IMAGE_NAME} || true"
+        //         sh "docker rm ${IMAGE_NAME} || true"
+        //         sh "docker run -d --name ${IMAGE_NAME} -p 3001:80 --restart unless-stopped ${IMAGE_NAME}:latest"
+        //     }
+        // }
     }
     
     post {

@@ -1,0 +1,53 @@
+pipeline {
+    agent any
+    
+    environment {
+        BUILD_DIR = 'build'
+    }
+    
+    stages {
+        stage('Setup') {
+            steps {
+                // Change to project directory
+                bat 'cd /d "d:\\LATIHAN\\belajar-react"'
+            }
+        }
+        
+        stage('Install Dependencies') {
+            steps {
+                bat 'npm ci'
+            }
+        }
+        
+        stage('Test') {
+            steps {
+                bat 'npm test -- --coverage --watchAll=false'
+            }
+        }
+        
+        stage('Build') {
+            steps {
+                bat 'npm run build'
+            }
+        }
+        
+        stage('Archive Build') {
+            steps {
+                archiveArtifacts artifacts: 'build/**/*', fingerprint: true
+            }
+        }
+    }
+    
+    post {
+        success {
+            echo 'Build completed successfully!'
+        }
+        failure {
+            echo 'Build failed!'
+        }
+        always {
+            // Clean workspace after build
+            cleanWs()
+        }
+    }
+}
