@@ -21,14 +21,7 @@ pipeline {
     }
     
     stages {
-        stage('Checkout Production Code') {
-            steps {
-                // Use SCM checkout instead of hardcoded URL
-                checkout scm
-                echo 'Checked out production code from main branch'
-            }
-        }
-        
+
         stage('Production Build') {
             steps {
                 echo 'Building for Production Environment'
