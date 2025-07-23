@@ -90,7 +90,6 @@ function App() {
               <span>EMAIL</span>
               <a href="mailto:hello@example.com">HELLO@EXAMPLE.COM</a>
             </div>
-
           </div>
         </div>
       </section>

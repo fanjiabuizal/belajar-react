@@ -19,7 +19,8 @@ pipeline {
         stage('Checkout Production Code') {
             steps {
                 // Checkout from main branch (production)
-                git branch: 'main', url: 'https://github.com/USERNAME/belajar-react.git'
+                // Replace YOUR_GITHUB_USERNAME with actual username
+                git branch: 'main', url: 'https://github.com/YOUR_GITHUB_USERNAME/belajar-react.git'
                 echo 'Checked out production code from main branch'
             }
         }
