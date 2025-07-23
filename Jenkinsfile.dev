@@ -38,8 +38,20 @@ pipeline {
                 bat 'if exist "D:\\LATIHAN\\jenkins\\dev" rmdir /s /q "D:\\LATIHAN\\jenkins\\dev"'
                 bat 'xcopy "build\\*" "D:\\LATIHAN\\jenkins\\dev\\" /E /I /Y'
                 
-                // Start dev server (optional)
-                bat 'cd "D:\\LATIHAN\\jenkins\\dev" && start /B npx serve -s . -l %PORT%'
+                // Install PM2 globally if not exists
+                bat 'npm list -g pm2 || npm install -g pm2'
+                
+                // Stop existing app
+                bat 'pm2 stop belajar-react-dev || echo App not running'
+                bat 'pm2 delete belajar-react-dev || echo App not found'
+                
+                // Start with PM2
+                bat 'pm2 start server-config.json'
+                bat 'pm2 save'
+                
+                // Verify server
+                bat 'timeout /t 5 /nobreak'
+                bat 'curl -f http://localhost:%PORT% || echo Server starting...'
             }
         }
         
