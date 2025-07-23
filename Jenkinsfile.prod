@@ -57,19 +57,20 @@ pipeline {
         }
         
         stage('Deploy Approval') {
-            when {
-                expression { params.DEPLOY_APPROVAL == 'YES' }
-            }
             steps {
-                input message: 'Deploy to Production?', ok: 'Deploy',
-                      submitterParameter: 'DEPLOYER'
+                script {
+                    def deployApproval = params.DEPLOY_APPROVAL ?: 'YES'
+                    if (deployApproval == 'YES') {
+                        input message: 'Deploy to Production?', ok: 'Deploy',
+                              submitterParameter: 'DEPLOYER'
+                    } else {
+                        echo 'Deployment skipped - DEPLOY_APPROVAL set to NO'
+                    }
+                }
             }
         }
         
         stage('Deploy to Production') {
-            when {
-                expression { params.DEPLOY_APPROVAL == 'YES' }
-            }
             steps {
                 echo 'Deploying to Production Server'
                 // Backup current production
@@ -98,9 +99,6 @@ pipeline {
         }
         
         stage('Archive Production Build') {
-            when {
-                expression { params.DEPLOY_APPROVAL == 'YES' }
-            }
             steps {
                 archiveArtifacts artifacts: 'build/**/*', fingerprint: true
             }
