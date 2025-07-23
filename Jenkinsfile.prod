@@ -15,7 +15,7 @@ pipeline {
     parameters {
         choice(
             name: 'DEPLOY_APPROVAL',
-            choices: ['NO', 'YES'],
+            choices: ['YES', 'NO'],
             description: 'Deploy to Production?'
         )
     }
@@ -98,6 +98,9 @@ pipeline {
         }
         
         stage('Archive Production Build') {
+            when {
+                expression { params.DEPLOY_APPROVAL == 'YES' }
+            }
             steps {
                 archiveArtifacts artifacts: 'build/**/*', fingerprint: true
             }
