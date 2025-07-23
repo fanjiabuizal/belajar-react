@@ -12,14 +12,7 @@ pipeline {
         PATH = "C:\\Program Files\\nodejs;${env.PATH}"  // Add Node.js to PATH
     }
     
-    parameters {
-        choice(
-            name: 'DEPLOY_APPROVAL',
-            choices: ['YES', 'NO'],
-            description: 'Deploy to Production?'
-        )
-    }
-    
+
     stages {
 
         stage('Production Build') {
@@ -59,20 +52,7 @@ pipeline {
             }
         }
         
-        stage('Deploy Approval') {
-            steps {
-                script {
-                    def deployApproval = params.DEPLOY_APPROVAL ?: 'YES'
-                    if (deployApproval == 'YES') {
-                        input message: 'Deploy to Production?', ok: 'Deploy',
-                              submitterParameter: 'DEPLOYER'
-                    } else {
-                        echo 'Deployment skipped - DEPLOY_APPROVAL set to NO'
-                    }
-                }
-            }
-        }
-        
+
         stage('Deploy to Production') {
             steps {
                 echo 'Deploying to Production Server'
@@ -88,8 +68,11 @@ pipeline {
                 bat 'npm list -g pm2 || npm install -g pm2'
                 
                 // Stop existing production app
-                bat 'pm2 stop belajar-react-prod || echo App not running'
-                bat 'pm2 delete belajar-react-prod || echo App not found'
+                script {
+                    bat(script: 'pm2 stop belajar-react-prod', returnStatus: true)
+                    bat(script: 'pm2 delete belajar-react-prod', returnStatus: true)
+                    echo 'Stopped existing PM2 processes'
+                }
                 
                 // Start production server with PM2
                 bat 'pm2 start npx --name "belajar-react-prod" -- serve -s "D:/LATIHAN/jenkins/prod" -p %PORT%'
@@ -97,7 +80,10 @@ pipeline {
                 
                 // Verify production server
                 bat 'timeout /t 5 /nobreak'
-                bat 'curl -f http://localhost:%PORT% || echo Production server starting...'
+                script {
+                    bat(script: 'curl -f http://localhost:%PORT%', returnStatus: true)
+                    echo 'Production server deployment completed'
+                }
             }
         }
         
@@ -111,22 +97,14 @@ pipeline {
     post {
         success {
             echo 'Production pipeline completed!'
-            script {
-                if (params.DEPLOY_APPROVAL == 'YES') {
-                    echo 'Production deployed! Access at http://localhost:3000'
-                    echo 'PM2 Status:'
-                    bat 'pm2 status'
-                }
-            }
+            echo 'Production deployed! Access at http://localhost:3000'
+            echo 'PM2 Status:'
+            bat 'pm2 status'
         }
         failure {
             echo 'Production pipeline failed!'
             // Rollback if deployment failed
-            script {
-                if (params.DEPLOY_APPROVAL == 'YES') {
-                    bat 'if exist "D:\\LATIHAN\\jenkins\\backup" xcopy "D:\\LATIHAN\\jenkins\\backup\\*" "D:\\LATIHAN\\jenkins\\prod\\" /E /I /Y'
-                }
-            }
+            bat 'if exist "D:\\LATIHAN\\jenkins\\backup" xcopy "D:\\LATIHAN\\jenkins\\backup\\*" "D:\\LATIHAN\\jenkins\\prod\\" /E /I /Y'
         }
     }
 }
